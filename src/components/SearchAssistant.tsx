@@ -30,7 +30,7 @@ export function SearchAssistant({ locations, onLocationSelect, onClose }: Search
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || 'AIzaSyAnXwgZWCpdJeYjrkPlJmGsVOVDE16GZZk';
+  const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
