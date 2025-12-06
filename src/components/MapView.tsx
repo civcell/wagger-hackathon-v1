@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
 import { Location } from '@/data/locations';
-import { MapPin } from 'lucide-react';
+import { MapPin, Navigation } from 'lucide-react';
 
 interface MapViewProps {
   locations: Location[];
@@ -24,105 +23,50 @@ export function MapView({
   center = [34.0224, -118.4851],
   zoom = 13 
 }: MapViewProps) {
-  const [MapComponent, setMapComponent] = useState<React.ComponentType<any> | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // Simple map view using OpenStreetMap iframe embed
+  const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${center[1] - 0.05}%2C${center[0] - 0.03}%2C${center[1] + 0.05}%2C${center[0] + 0.03}&layer=mapnik`;
 
-  useEffect(() => {
-    // Dynamic import to avoid SSR issues
-    const loadMap = async () => {
-      try {
-        const L = await import('leaflet');
-        const { MapContainer, TileLayer, Marker, Popup } = await import('react-leaflet');
-        await import('leaflet/dist/leaflet.css');
-
-        // Fix for default marker icons
-        delete (L.Icon.Default.prototype as any)._getIconUrl;
-        L.Icon.Default.mergeOptions({
-          iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-          iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-        });
-
-        const createCustomIcon = (category: string) => {
-          return L.divIcon({
-            className: 'custom-marker',
-            html: `
-              <div style="
-                background: white;
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                border: 3px solid hsl(150, 25%, 45%);
-                font-size: 18px;
-              ">
-                ${categoryEmojis[category] || '📍'}
-              </div>
-            `,
-            iconSize: [40, 40],
-            iconAnchor: [20, 40],
-            popupAnchor: [0, -40],
-          });
-        };
-
-        // Create the map component
-        const DynamicMap = ({ locations, onLocationClick, center, zoom }: MapViewProps) => (
-          <MapContainer
-            center={center}
-            zoom={zoom}
-            className="w-full h-full rounded-2xl"
-            zoomControl={false}
-          >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-            />
-            {locations.map((location) => (
-              <Marker
-                key={location.id}
-                position={location.coordinates}
-                icon={createCustomIcon(location.category)}
-                eventHandlers={{
-                  click: () => onLocationClick(location),
-                }}
-              >
-                <Popup>
-                  <div className="p-1">
-                    <h3 className="font-bold text-sm">{location.name}</h3>
-                    <p className="text-xs text-muted-foreground">⭐ {location.rating}</p>
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
-          </MapContainer>
-        );
-
-        setMapComponent(() => DynamicMap);
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error loading map:', error);
-        setIsLoading(false);
-      }
-    };
-
-    loadMap();
-  }, []);
-
-  if (isLoading || !MapComponent) {
-    return (
-      <div className="w-full h-full rounded-2xl bg-secondary flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
-            <MapPin className="w-8 h-8 text-primary" />
-          </div>
-          <p className="text-muted-foreground">Loading map...</p>
+  return (
+    <div className="relative w-full h-full rounded-2xl overflow-hidden bg-secondary">
+      {/* Map Background */}
+      <iframe
+        src={mapUrl}
+        className="absolute inset-0 w-full h-full border-0"
+        title="Map"
+        loading="lazy"
+      />
+      
+      {/* Overlay with location markers */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Center indicator */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-auto">
+          <div className="w-4 h-4 bg-primary rounded-full shadow-lg animate-pulse" />
         </div>
       </div>
-    );
-  }
-
-  return <MapComponent locations={locations} onLocationClick={onLocationClick} center={center} zoom={zoom} />;
+      
+      {/* Location chips on map */}
+      <div className="absolute top-4 left-4 right-4 flex flex-wrap gap-2 pointer-events-auto">
+        {locations.slice(0, 4).map((location) => (
+          <button
+            key={location.id}
+            onClick={() => onLocationClick(location)}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-card/95 backdrop-blur-sm rounded-full shadow-card hover:shadow-hover transition-all text-sm font-medium"
+          >
+            <span>{categoryEmojis[location.category]}</span>
+            <span className="max-w-[100px] truncate">{location.name}</span>
+          </button>
+        ))}
+        {locations.length > 4 && (
+          <div className="flex items-center gap-1 px-3 py-1.5 bg-primary/90 backdrop-blur-sm rounded-full shadow-card text-primary-foreground text-sm font-medium">
+            +{locations.length - 4} more
+          </div>
+        )}
+      </div>
+      
+      {/* My location button */}
+      <button className="absolute bottom-4 right-4 w-12 h-12 bg-card rounded-full shadow-hover flex items-center justify-center hover:bg-secondary transition-colors pointer-events-auto">
+        <Navigation className="w-5 h-5 text-primary" />
+      </button>
+    </div>
+  );
 }

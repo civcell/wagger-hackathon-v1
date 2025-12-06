@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 export function ExplorePage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
-  const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
+  const [viewMode, setViewMode] = useState<'map' | 'list'>('list');
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredLocations = useMemo(() => {
