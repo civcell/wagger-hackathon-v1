@@ -4,7 +4,7 @@ import { CategoryFilter } from '@/components/CategoryFilter';
 import { LocationCard } from '@/components/LocationCard';
 import { SearchBar } from '@/components/SearchBar';
 import { LocationDetail } from '@/components/LocationDetail';
-import { AIAssistant } from '@/components/AIAssistant';
+import { SearchAssistant } from '@/components/SearchAssistant';
 import { locations, Location } from '@/data/locations';
 import { Map, List } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -14,6 +14,7 @@ export function ExplorePage() {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('list');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showAssistant, setShowAssistant] = useState(false);
 
   const filteredLocations = useMemo(() => {
     return locations.filter((location) => {
@@ -56,7 +57,10 @@ export function ExplorePage() {
           </div>
         </div>
         
-        <SearchBar onSearch={setSearchQuery} />
+        <SearchBar 
+          onSearch={setSearchQuery} 
+          onAssistantClick={() => setShowAssistant(true)}
+        />
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
       </div>
 
@@ -122,8 +126,17 @@ export function ExplorePage() {
         />
       )}
 
-      {/* AI Assistant */}
-      <AIAssistant />
+      {/* Search Assistant */}
+      {showAssistant && (
+        <SearchAssistant
+          locations={locations}
+          onLocationSelect={(location) => {
+            setSelectedLocation(location);
+            setShowAssistant(false);
+          }}
+          onClose={() => setShowAssistant(false)}
+        />
+      )}
     </div>
   );
 }

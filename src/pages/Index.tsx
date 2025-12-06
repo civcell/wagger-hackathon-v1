@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { BottomNav } from '@/components/BottomNav';
 import { ExplorePage } from '@/pages/ExplorePage';
 import { CommunityPage } from '@/pages/CommunityPage';
-import { FavoritesPage } from '@/pages/FavoritesPage';
+import { MatchPage } from '@/pages/MatchPage';
 import { ProfilePage } from '@/pages/ProfilePage';
+import { ChatBotPage } from '@/pages/ChatBotPage';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('explore');
@@ -14,8 +15,10 @@ const Index = () => {
         return <ExplorePage />;
       case 'community':
         return <CommunityPage />;
-      case 'favorites':
-        return <FavoritesPage />;
+      case 'match':
+        return <MatchPage />;
+      case 'chat':
+        return <ChatBotPage />;
       case 'profile':
         return <ProfilePage />;
       default:

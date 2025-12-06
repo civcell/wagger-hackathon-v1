@@ -1,12 +1,13 @@
-import { Search, SlidersHorizontal } from 'lucide-react';
+import { Search, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
   onFilterClick?: () => void;
+  onAssistantClick?: () => void;
 }
 
-export function SearchBar({ onSearch, onFilterClick }: SearchBarProps) {
+export function SearchBar({ onSearch, onFilterClick, onAssistantClick }: SearchBarProps) {
   const [query, setQuery] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -26,6 +27,16 @@ export function SearchBar({ onSearch, onFilterClick }: SearchBarProps) {
           className="w-full h-12 pl-12 pr-4 rounded-xl bg-card border border-border shadow-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
         />
       </div>
+      {onAssistantClick && (
+        <button
+          type="button"
+          onClick={onAssistantClick}
+          className="w-12 h-12 rounded-xl bg-primary text-primary-foreground shadow-card flex items-center justify-center hover:bg-primary/90 transition-all"
+          title="AI Search Assistant"
+        >
+          <Sparkles className="w-5 h-5" />
+        </button>
+      )}
       <button
         type="button"
         onClick={onFilterClick}

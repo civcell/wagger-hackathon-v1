@@ -1,4 +1,4 @@
-import { Compass, Users, Heart, User } from 'lucide-react';
+import { Compass, Users, Heart, User, MessageCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface BottomNavProps {
@@ -9,7 +9,8 @@ interface BottomNavProps {
 const navItems = [
   { id: 'explore', label: 'Explore', icon: Compass },
   { id: 'community', label: 'Community', icon: Users },
-  { id: 'favorites', label: 'Favorites', icon: Heart },
+  { id: 'match', label: 'Match', icon: Heart },
+  { id: 'chat', label: 'Chat', icon: MessageCircle },
   { id: 'profile', label: 'Profile', icon: User },
 ];
 
