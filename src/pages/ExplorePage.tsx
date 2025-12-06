@@ -4,6 +4,7 @@ import { CategoryFilter } from '@/components/CategoryFilter';
 import { LocationCard } from '@/components/LocationCard';
 import { SearchBar } from '@/components/SearchBar';
 import { LocationDetail } from '@/components/LocationDetail';
+import { AIAssistant } from '@/components/AIAssistant';
 import { locations, Location } from '@/data/locations';
 import { Map, List } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -120,6 +121,9 @@ export function ExplorePage() {
           onClose={() => setSelectedLocation(null)} 
         />
       )}
+
+      {/* AI Assistant */}
+      <AIAssistant />
     </div>
   );
 }
