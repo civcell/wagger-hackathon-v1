@@ -225,3 +225,27 @@
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-muted-foreground/30;
 }
+
+/* Leaflet map styles */
+.leaflet-container {
+  font-family: 'Nunito', sans-serif;
+}
+
+.leaflet-popup-content-wrapper {
+  @apply rounded-xl shadow-card border border-border;
+  padding: 0;
+}
+
+.leaflet-popup-content {
+  margin: 0;
+  padding: 0;
+}
+
+.leaflet-popup-tip {
+  @apply bg-card border-border;
+}
+
+.custom-marker {
+  background: transparent !important;
+  border: none !important;
+}

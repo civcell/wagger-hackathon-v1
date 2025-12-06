@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 export function ExplorePage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
-  const [viewMode, setViewMode] = useState<'map' | 'list'>('list');
+  const [viewMode, setViewMode] = useState<'map' | 'list'>('map'); // Default to map view
   const [searchQuery, setSearchQuery] = useState('');
   const [showAssistant, setShowAssistant] = useState(false);
 
@@ -66,32 +66,35 @@ export function ExplorePage() {
 
       {/* Content */}
       {viewMode === 'map' ? (
-        <div className="flex-1 pt-48 h-full">
-          <div className="h-full min-h-[400px]">
+        <div className="flex-1 pt-48 h-full relative">
+          <div className="h-full w-full">
             <MapView 
               locations={filteredLocations} 
               onLocationClick={setSelectedLocation}
+              selectedLocation={selectedLocation}
             />
           </div>
           
-          {/* Floating location cards */}
-          <div className="absolute bottom-24 left-0 right-0 px-4">
-            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-              {filteredLocations.slice(0, 5).map((location, index) => (
-                <div 
-                  key={location.id} 
-                  className="w-72 flex-shrink-0 animate-fade-in"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <LocationCard 
-                    location={location} 
-                    onClick={() => setSelectedLocation(location)}
-                    compact
-                  />
-                </div>
-              ))}
+          {/* Floating location cards - only show when locations are filtered */}
+          {filteredLocations.length > 0 && (
+            <div className="absolute bottom-24 left-0 right-0 px-4 z-30">
+              <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                {filteredLocations.slice(0, 5).map((location, index) => (
+                  <div 
+                    key={location.id} 
+                    className="w-72 flex-shrink-0 animate-fade-in"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <LocationCard 
+                      location={location} 
+                      onClick={() => setSelectedLocation(location)}
+                      compact
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       ) : (
         <div className="flex-1 pt-48 pb-24 px-4 overflow-y-auto">
