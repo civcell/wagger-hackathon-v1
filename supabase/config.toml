@@ -1,0 +1,4 @@
+project_id = "nlnxlbokjifpizilbqcd"
+
+[functions.waggr-assistant]
+verify_jwt = false
